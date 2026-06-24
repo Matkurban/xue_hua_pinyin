@@ -7,8 +7,6 @@ issue_tracker: https://github.com/Matkurban/xue_hua_pinyin/issues
 documentation: https://github.com/Matkurban/xue_hua_pinyin/blob/main/README.md
 topics:
   - pinyin
-  - contact list
-  - index letter
 
 environment:
   sdk: ^3.12.2
