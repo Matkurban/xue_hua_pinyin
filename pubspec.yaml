@@ -6,12 +6,9 @@ repository: https://github.com/Matkurban/xue_hua_pinyin
 issue_tracker: https://github.com/Matkurban/xue_hua_pinyin/issues
 documentation: https://github.com/Matkurban/xue_hua_pinyin/blob/main/README.md
 topics:
-  - flutter
-  - rust
   - pinyin
   - contact list
   - index letter
-  - digit/punctuation fallback
 
 environment:
   sdk: ^3.12.2
