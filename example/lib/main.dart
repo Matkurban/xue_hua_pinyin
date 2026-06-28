@@ -11,8 +11,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstLetter = getFirstLetter(text: '张三');
-    final pinyin = toLazyPinyin(
+    final firstLetter = XueHuaPinyin.getFirstLetter(text: '张三');
+    final pinyin = XueHuaPinyin.toLazyPinyin(
       text: '中国人',
       args: const PinyinArgs(style: PinyinStyle.normal, heteronym: false),
     );

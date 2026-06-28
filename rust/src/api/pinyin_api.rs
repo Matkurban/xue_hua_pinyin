@@ -1,4 +1,5 @@
-use pinyin::{lazy_pinyin, pinyin, Args, Style, ToPinyin};
+use pinyin::{Pinyin, ToPinyin, ToPinyinMulti};
+use std::collections::HashSet;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PinyinStyle {
@@ -27,23 +28,39 @@ impl Default for PinyinArgs {
     }
 }
 
-fn to_pinyin_style(style: PinyinStyle) -> Style {
-    match style {
-        PinyinStyle::Normal => Style::Normal,
-        PinyinStyle::Tone => Style::Tone,
-        PinyinStyle::Tone2 => Style::Tone2,
-        PinyinStyle::FirstLetter => Style::FirstLetter,
-        PinyinStyle::Initials => Style::Initials,
-        PinyinStyle::Finals => Style::Finals,
-        PinyinStyle::FinalsTone => Style::FinalsTone,
-        PinyinStyle::FinalsTone2 => Style::FinalsTone2,
+fn initial_consonant(plain: &str) -> &str {
+    for prefix in ["zh", "ch", "sh"] {
+        if plain.starts_with(prefix) {
+            return prefix;
+        }
+    }
+    match plain.chars().next() {
+        Some(c) if c.is_ascii_alphabetic() && !matches!(c, 'a' | 'e' | 'i' | 'o' | 'u') => {
+            &plain[..c.len_utf8()]
+        }
+        _ => "",
     }
 }
 
-fn to_args(args: &PinyinArgs) -> Args {
-    Args {
-        style: to_pinyin_style(args.style),
-        heteronym: args.heteronym,
+fn apply_pinyin_style(py: Pinyin, style: PinyinStyle) -> &'static str {
+    match style {
+        PinyinStyle::Normal => py.plain(),
+        PinyinStyle::Tone => py.with_tone(),
+        PinyinStyle::Tone2 => py.with_tone_num(),
+        PinyinStyle::FirstLetter => py.first_letter(),
+        PinyinStyle::Initials => initial_consonant(py.plain()),
+        PinyinStyle::Finals => {
+            let plain = py.plain();
+            &plain[initial_consonant(plain).len()..]
+        }
+        PinyinStyle::FinalsTone => {
+            let plain = py.plain();
+            &py.with_tone()[initial_consonant(plain).len()..]
+        }
+        PinyinStyle::FinalsTone2 => {
+            let plain = py.plain();
+            &py.with_tone_num()[initial_consonant(plain).len()..]
+        }
     }
 }
 
@@ -71,12 +88,40 @@ fn first_letter_of(text: &str, digit_fallback: &str) -> String {
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn to_lazy_pinyin(text: String, args: PinyinArgs) -> Vec<String> {
-    lazy_pinyin(&text, &to_args(&args))
+    text.as_str()
+        .to_pinyin()
+        .flatten()
+        .map(|py| apply_pinyin_style(py, args.style).to_string())
+        .collect()
 }
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn to_pinyin(text: String, args: PinyinArgs) -> Vec<Vec<String>> {
-    pinyin(&text, &to_args(&args))
+    if args.heteronym {
+        text.as_str()
+            .to_pinyin_multi()
+            .map(|multi| match multi {
+                Some(multi) => {
+                    let mut set = HashSet::new();
+                    multi
+                        .into_iter()
+                        .map(|py| apply_pinyin_style(py, args.style))
+                        .filter(|s| set.insert(*s))
+                        .map(str::to_string)
+                        .collect()
+                }
+                None => vec![],
+            })
+            .collect()
+    } else {
+        text.as_str()
+            .to_pinyin()
+            .map(|opt| {
+                opt.map(|py| vec![apply_pinyin_style(py, args.style).to_string()])
+                    .unwrap_or_default()
+            })
+            .collect()
+    }
 }
 
 #[flutter_rust_bridge::frb(sync)]
@@ -133,6 +178,51 @@ mod tests {
         assert_eq!(
             to_lazy_pinyin("中国人".to_string(), args),
             vec!["zhong", "guo", "ren"]
+        );
+    }
+
+    #[test]
+    fn test_to_lazy_pinyin_initials() {
+        let args = PinyinArgs {
+            style: PinyinStyle::Initials,
+            heteronym: false,
+        };
+        assert_eq!(
+            to_lazy_pinyin("中国人".to_string(), args),
+            vec!["zh", "g", "r"]
+        );
+    }
+
+    #[test]
+    fn test_to_lazy_pinyin_finals() {
+        let args = PinyinArgs {
+            style: PinyinStyle::Finals,
+            heteronym: false,
+        };
+        assert_eq!(
+            to_lazy_pinyin("中国人".to_string(), args),
+            vec!["ong", "uo", "en"]
+        );
+    }
+
+    #[test]
+    fn test_to_lazy_pinyin_zero_initial() {
+        let args = PinyinArgs {
+            style: PinyinStyle::Finals,
+            heteronym: false,
+        };
+        assert_eq!(to_lazy_pinyin("安".to_string(), args), vec!["an"]);
+    }
+
+    #[test]
+    fn test_to_pinyin_heteronym() {
+        let args = PinyinArgs {
+            style: PinyinStyle::Normal,
+            heteronym: true,
+        };
+        assert_eq!(
+            to_pinyin("阿拉巴".to_string(), args),
+            vec![vec!["a", "e"], vec!["la"], vec!["ba"]]
         );
     }
 

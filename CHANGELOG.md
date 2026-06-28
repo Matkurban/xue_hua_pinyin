@@ -5,6 +5,22 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## 1.1.0
+
+### 变更（Breaking）
+
+- 移除顶层函数导出（`getFirstLetter`、`getFirstLetters`、`toLazyPinyin`、`toPinyin`）；请统一通过 `XueHuaPinyin.getFirstLetter`、`XueHuaPinyin.toLazyPinyin` 等静态方法调用
+- `PinyinArgs.default_()` 改为 `XueHuaPinyin.defaultPinyinArgs()`
+
+### 变更
+
+- Rust 层迁移至 `pinyin` 0.11 新 API（`ToPinyin` / `ToPinyinMulti`），消除全部弃用编译警告
+
+### 文档
+
+- 英文 README 完整重写
+- 新增中文文档 [`README.zh-CN.md`](README.zh-CN.md)，与 README 内容对等并互链
+
 ## 1.0.0
 
 ### 新增

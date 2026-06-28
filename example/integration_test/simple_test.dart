@@ -7,39 +7,43 @@ void main() {
   setUpAll(() async => await XueHuaPinyin.initialize());
 
   test('getFirstLetter converts Chinese to pinyin initial', () {
-    expect(getFirstLetter(text: '张三'), 'Z');
+    expect(XueHuaPinyin.getFirstLetter(text: '张三'), 'Z');
   });
 
   test('getFirstLetter returns uppercase English letter', () {
-    expect(getFirstLetter(text: 'Apple'), 'A');
+    expect(XueHuaPinyin.getFirstLetter(text: 'Apple'), 'A');
   });
 
   test('getFirstLetter returns default # for digits', () {
-    expect(getFirstLetter(text: '123'), '#');
+    expect(XueHuaPinyin.getFirstLetter(text: '123'), '#');
   });
 
   test('getFirstLetter supports custom digit fallback', () {
-    expect(getFirstLetter(text: '123', digitFallback: '*'), '*');
+    expect(XueHuaPinyin.getFirstLetter(text: '123', digitFallback: '*'), '*');
   });
 
   test('getFirstLetter uses first character for mixed strings', () {
-    expect(getFirstLetter(text: '张3abc'), 'Z');
-    expect(getFirstLetter(text: 'A张三'), 'A');
-    expect(getFirstLetter(text: '1张三'), '#');
+    expect(XueHuaPinyin.getFirstLetter(text: '张3abc'), 'Z');
+    expect(XueHuaPinyin.getFirstLetter(text: 'A张三'), 'A');
+    expect(XueHuaPinyin.getFirstLetter(text: '1张三'), '#');
   });
 
   test('getFirstLetter returns fallback for punctuation', () {
-    expect(getFirstLetter(text: '!hello'), '#');
-    expect(getFirstLetter(text: '@test', digitFallback: '*'), '*');
+    expect(XueHuaPinyin.getFirstLetter(text: '!hello'), '#');
+    expect(XueHuaPinyin.getFirstLetter(text: '@test', digitFallback: '*'), '*');
   });
 
   test('getFirstLetters batch converts correctly', () {
-    expect(getFirstLetters(texts: ['张三', 'Bob', '007']), ['Z', 'B', '#']);
+    expect(XueHuaPinyin.getFirstLetters(texts: ['张三', 'Bob', '007']), [
+      'Z',
+      'B',
+      '#',
+    ]);
   });
 
   test('toLazyPinyin converts Chinese to toneless pinyin', () {
     expect(
-      toLazyPinyin(
+      XueHuaPinyin.toLazyPinyin(
         text: '中国人',
         args: const PinyinArgs(style: PinyinStyle.normal, heteronym: false),
       ),

@@ -1,39 +1,42 @@
 # xue_hua_pinyin
 
-基于 Rust [pinyin](https://crates.io/crates/pinyin) 与 [flutter_rust_bridge](https://pub.dev/packages/flutter_rust_bridge) 的高性能 Flutter 拼音插件，适用于通讯录索引、头像占位、搜索分组等场景。
+> **Language:** [中文文档](README.zh-CN.md)
 
-## 特性
+A high-performance Flutter pinyin plugin powered by Rust. Converts Chinese to pinyin (heteronym, multiple tone styles) and extracts index letters for contact lists, avatar placeholders, search grouping, and similar scenarios.
 
-- **核心拼音转换**：支持无声调、带声调、数字声调、首字母等多种输出风格，支持多音字
-- **首字母便捷方法**：提供单个与批量 API，自动处理中英文混合字符串
-- **高性能**：核心逻辑由 Rust 实现，同步调用、开销低
-- **跨平台**：支持 Android、iOS、macOS、Windows、Linux
+## Features
 
-## 平台支持
+- **Core pinyin conversion**: toneless, toned, numeric tone, first letter, initials, finals, and more
+- **Heteronym support**: return all readings per character via `toPinyin`
+- **Index letters**: single and batch APIs for mixed Chinese/English strings
+- **High performance**: core logic in Rust with synchronous calls
+- **Cross-platform**: Android, iOS, macOS, Windows, Linux
 
-| 平台    | 支持 |
-|---------|------|
-| Android | ✅   |
-| iOS     | ✅   |
-| macOS   | ✅   |
-| Windows | ✅   |
-| Linux   | ✅   |
-| Web     | ❌   |
+## Platform Support
 
-## 安装
+| Platform | Supported |
+|----------|-----------|
+| Android  | Yes       |
+| iOS      | Yes       |
+| macOS    | Yes       |
+| Windows  | Yes       |
+| Linux    | Yes       |
+| Web      | No        |
 
-在 `pubspec.yaml` 中添加依赖：
+## Installation
+
+Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  xue_hua_pinyin: ^1.0.0
+  xue_hua_pinyin: ^lasted
 ```
 
-## 快速开始
+## Quick Start
 
-### 1. 初始化
+### 1. Initialize
 
-在使用任何 API 之前，必须先调用一次初始化方法：
+Call `XueHuaPinyin.initialize()` once before using any other API:
 
 ```dart
 import 'package:xue_hua_pinyin/xue_hua_pinyin.dart';
@@ -45,34 +48,34 @@ Future<void> main() async {
 }
 ```
 
-> **注意**：`XueHuaPinyin.initialize()` 只需在应用启动时调用一次，重复调用是安全的。
+> **Note:** `XueHuaPinyin.initialize()` is safe to call multiple times, but only needs to run once at app startup.
 
-### 2. 获取首字母
+### 2. Index Letters
 
-适用于通讯录分组、头像占位文字等场景：
+Useful for contact grouping, avatar placeholder text, and similar UI:
 
 ```dart
-// 中文：取无声调拼音首字母并大写
-getFirstLetter(text: '张三');   // 'Z'
+// Chinese: uppercase first letter of toneless pinyin
+XueHuaPinyin.getFirstLetter(text: '张三');   // 'Z'
 
-// 英文：取首字母并大写
-getFirstLetter(text: 'Apple');  // 'A'
+// English: uppercase first letter
+XueHuaPinyin.getFirstLetter(text: 'Apple');  // 'A'
 
-// 数字：默认返回 '#'
-getFirstLetter(text: '123');    // '#'
+// Digits: default fallback '#'
+XueHuaPinyin.getFirstLetter(text: '123');    // '#'
 
-// 自定义数字/标点占位符
-getFirstLetter(text: '123', digitFallback: '*'); // '*'
+// Custom fallback for digits / punctuation
+XueHuaPinyin.getFirstLetter(text: '123', digitFallback: '*'); // '*'
 
-// 批量处理
-getFirstLetters(texts: ['张三', 'Bob', '007']); // ['Z', 'B', '#']
+// Batch
+XueHuaPinyin.getFirstLetters(texts: ['张三', 'Bob', '007']); // ['Z', 'B', '#']
 ```
 
-### 3. 拼音转换
+### 3. Pinyin Conversion
 
 ```dart
-// 无声调拼音，每字取一个读音
-final lazy = toLazyPinyin(
+// Toneless pinyin, one reading per character
+final lazy = XueHuaPinyin.toLazyPinyin(
   text: '中国人',
   args: const PinyinArgs(
     style: PinyinStyle.normal,
@@ -81,89 +84,92 @@ final lazy = toLazyPinyin(
 );
 // ['zhong', 'guo', 'ren']
 
-// 多音字：返回每个字的所有读音
-final multi = toPinyin(
+// Heteronym: all readings per character
+final multi = XueHuaPinyin.toPinyin(
   text: '银行',
   args: const PinyinArgs(
     style: PinyinStyle.normal,
     heteronym: true,
   ),
 );
-// [['yin', 'hang'], ['xing'], ...]（具体取决于多音字数据）
+// [['yin', 'hang'], ['xing'], ...] (depends on heteronym data)
 ```
 
-## API 参考
+## API Reference
 
-### 初始化
+All methods are static members of [`XueHuaPinyin`](lib/src/xue_hua_pinyin.dart). Types [`PinyinArgs`](lib/src/rust/api/pinyin_api.dart) and [`PinyinStyle`](lib/src/rust/api/pinyin_api.dart) are exported at the package level for constructing arguments.
 
-| 方法 | 说明 |
-|------|------|
-| `XueHuaPinyin.initialize()` | 初始化 Rust 运行时，应用启动时调用一次 |
+### Initialization
 
-### 首字母
+| Method | Description |
+|--------|-------------|
+| `XueHuaPinyin.initialize()` | Initialize the Rust runtime; call once at startup |
+| `XueHuaPinyin.defaultPinyinArgs()` | Returns default `PinyinArgs` from Rust |
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| `getFirstLetter` | `text`（必填）、`digitFallback`（可选，默认 `'#'`） | `String` | 获取单个字符串的首字母 |
-| `getFirstLetters` | `texts`（必填）、`digitFallback`（可选，默认 `'#'`） | `List<String>` | 批量获取首字母 |
+### Index Letters
 
-#### 首字母判定规则
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| `XueHuaPinyin.getFirstLetter` | `text` (required), `digitFallback` (optional, default `'#'`) | `String` | Index letter for one string |
+| `XueHuaPinyin.getFirstLetters` | `texts` (required), `digitFallback` (optional, default `'#'`) | `List<String>` | Index letters for many strings |
 
-对 `text.trim()` 后的**第一个字符**进行判定：
+#### Index Letter Rules
 
-| 首字符类型 | 处理方式 | 示例 |
-|------------|----------|------|
-| 中文汉字 | 转为无声调拼音，取首字母并大写 | `'张三'` → `'Z'` |
-| 英文字母 | 直接取首字母并大写 | `'Apple'` → `'A'` |
-| 数字 | 返回 `digitFallback`（默认 `'#'`） | `'123'` → `'#'` |
-| 标点符号 | 返回 `digitFallback`（默认 `'#'`） | `'!hello'` → `'#'` |
-| 其他字符 | 返回 `digitFallback`（默认 `'#'`） | emoji 等 → `'#'` |
-| 空字符串 | 返回空字符串 | `''` → `''` |
+The **first character** of `text.trim()` determines the result:
 
-#### 混合字符串
+| First character | Behavior | Example |
+|-----------------|----------|---------|
+| Chinese hanzi | Toneless pinyin first letter, uppercased | `'张三'` → `'Z'` |
+| ASCII letter | Uppercased | `'Apple'` → `'A'` |
+| Digit | Returns `digitFallback` (default `'#'`) | `'123'` → `'#'` |
+| Punctuation | Returns `digitFallback` (default `'#'`) | `'!hello'` → `'#'` |
+| Other | Returns `digitFallback` (default `'#'`) | emoji → `'#'` |
+| Empty string | Empty string | `''` → `''` |
 
-只根据**第一个字符**决定结果，后续字符不影响输出：
+#### Mixed Strings
+
+Only the **first character** matters:
 
 ```dart
-getFirstLetter(text: '张3abc'); // 'Z' — 首字为中文
-getFirstLetter(text: 'A张三');  // 'A' — 首字为英文
-getFirstLetter(text: '1张三');  // '#' — 首字为数字
+XueHuaPinyin.getFirstLetter(text: '张3abc'); // 'Z' — first char is Chinese
+XueHuaPinyin.getFirstLetter(text: 'A张三');  // 'A' — first char is English
+XueHuaPinyin.getFirstLetter(text: '1张三');  // '#' — first char is digit
 ```
 
-### 拼音转换
+### Pinyin Conversion
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| `toLazyPinyin` | `text`、`args` | `List<String>` | 每字取一个读音 |
-| `toPinyin` | `text`、`args` | `List<List<String>>` | 支持多音字，每字可返回多个读音 |
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| `XueHuaPinyin.toLazyPinyin` | `text`, `args` | `List<String>` | One reading per character |
+| `XueHuaPinyin.toPinyin` | `text`, `args` | `List<List<String>>` | Optional heteronym; multiple readings per character |
 
 #### PinyinArgs
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `style` | `PinyinStyle` | 拼音输出风格 |
-| `heteronym` | `bool` | 是否启用多音字（仅 `toPinyin` 有效） |
+| Field | Type | Description |
+|-------|------|-------------|
+| `style` | `PinyinStyle` | Output style |
+| `heteronym` | `bool` | Enable heteronym (only affects `toPinyin`) |
 
 #### PinyinStyle
 
-| 值 | 说明 | 示例 |
-|----|------|------|
-| `normal` | 无声调 | `zhong` |
-| `tone` | 带声调 | `zhōng` |
-| `tone2` | 数字声调（声调在字母中间） | `zho1ng` |
-| `firstLetter` | 首字母 | `z` |
-| `initials` | 声母 | `zh` |
-| `finals` | 韵母 | `ong` |
-| `finalsTone` | 带声调韵母 | `ōng` |
-| `finalsTone2` | 数字声调韵母 | `o1ng` |
+| Value | Description | Example |
+|-------|-------------|---------|
+| `normal` | Toneless | `zhong` |
+| `tone` | With tone marks | `zhōng` |
+| `tone2` | Numeric tone (mid-syllable) | `zho1ng` |
+| `firstLetter` | First letter | `z` |
+| `initials` | Initial consonant | `zh` |
+| `finals` | Final (toneless) | `ong` |
+| `finalsTone` | Final with tone | `ōng` |
+| `finalsTone2` | Final with numeric tone | `o1ng` |
 
-## 使用场景示例
+## Usage Examples
 
-### 通讯录索引分组
+### Contact List Grouping
 
 ```dart
 String sectionKey(String name) {
-  final letter = getFirstLetter(text: name);
+  final letter = XueHuaPinyin.getFirstLetter(text: name);
   if (letter == '#') return '#';
   return letter; // 'A' ~ 'Z'
 }
@@ -178,12 +184,12 @@ for (final name in names) {
 // {'A': ['Alice'], 'Z': ['张三'], 'B': ['Bob'], '#': ['123号', '!特殊']}
 ```
 
-### 头像占位文字
+### Avatar Placeholder Text
 
 ```dart
 String avatarText(String? name) {
   if (name == null || name.trim().isEmpty) return '';
-  return getFirstLetter(text: name);
+  return XueHuaPinyin.getFirstLetter(text: name);
 }
 
 avatarText('张三');  // 'Z'
@@ -191,52 +197,14 @@ avatarText('Tom');   // 'T'
 avatarText('007');   // '#'
 ```
 
-## 开发与构建
 
-本项目使用 [flutter_rust_bridge](https://codelabs.developers.google.com/codelabs/flutter-codelab-frb) 进行 Dart ↔ Rust 绑定。
+## Dependencies
 
-### 项目结构
+| Dependency | Purpose |
+|------------|---------|
+| [pinyin](https://crates.io/crates/pinyin) 0.11 | Rust pinyin engine |
+| [flutter_rust_bridge](https://pub.dev/packages/flutter_rust_bridge) 2.12.0 | Dart ↔ Rust FFI |
 
-```
-xue_hua_pinyin/
-├── lib/
-│   ├── xue_hua_pinyin.dart          # 公共导出
-│   └── src/
-│       ├── xue_hua_pinyin.dart      # XueHuaPinyin.initialize()
-│       └── rust/                    # FRB 生成的 Dart 绑定
-├── rust/
-│   └── src/api/
-│       ├── pinyin_api.rs            # 拼音 API 实现
-│       └── simple.rs                # FRB 初始化
-├── flutter_rust_bridge.yaml         # FRB 代码生成配置
-└── cargokit/                        # 跨平台 Rust 构建工具
-```
+## License
 
-### 修改 Rust API 后重新生成绑定
-
-```bash
-flutter_rust_bridge_codegen generate
-```
-
-### 运行 Rust 单元测试
-
-```bash
-cd rust && cargo test
-```
-
-### 运行集成测试
-
-```bash
-cd example && flutter test integration_test/simple_test.dart
-```
-
-## 依赖说明
-
-| 依赖 | 用途 |
-|------|------|
-| [pinyin](https://crates.io/crates/pinyin) 0.11 | Rust 拼音转换引擎 |
-| [flutter_rust_bridge](https://pub.dev/packages/flutter_rust_bridge) 2.12.0 | Dart ↔ Rust FFI 绑定 |
-
-## 许可证
-
-本项目基于 [Apache License 2.0](LICENSE) 发布。
+Licensed under the [Apache License 2.0](LICENSE).
