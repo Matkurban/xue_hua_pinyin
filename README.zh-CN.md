@@ -14,14 +14,14 @@
 
 ## 平台支持
 
-| 平台    | 支持 |
-|---------|------|
-| Android | ✅   |
-| iOS     | ✅   |
-| macOS   | ✅   |
-| Windows | ✅   |
-| Linux   | ✅   |
-| Web     | ❌   |
+| 平台      | 支持 |
+|---------|----|
+| Android | ✅  |
+| iOS     | ✅  |
+| macOS   | ✅  |
+| Windows | ✅  |
+| Linux   | ✅  |
+| Web     | ❌  |
 
 ## 安装
 
@@ -101,30 +101,30 @@ final multi = XueHuaPinyin.toPinyin(
 
 ### 初始化
 
-| 方法 | 说明 |
-|------|------|
-| `XueHuaPinyin.initialize()` | 初始化 Rust 运行时，应用启动时调用一次 |
+| 方法                                 | 说明                       |
+|------------------------------------|--------------------------|
+| `XueHuaPinyin.initialize()`        | 初始化 Rust 运行时，应用启动时调用一次   |
 | `XueHuaPinyin.defaultPinyinArgs()` | 从 Rust 获取默认 `PinyinArgs` |
 
 ### 首字母
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| `XueHuaPinyin.getFirstLetter` | `text`（必填）、`digitFallback`（可选，默认 `'#'`） | `String` | 获取单个字符串的首字母 |
-| `XueHuaPinyin.getFirstLetters` | `texts`（必填）、`digitFallback`（可选，默认 `'#'`） | `List<String>` | 批量获取首字母 |
+| 方法                             | 参数                                       | 返回值            | 说明          |
+|--------------------------------|------------------------------------------|----------------|-------------|
+| `XueHuaPinyin.getFirstLetter`  | `text`（必填）、`digitFallback`（可选，默认 `'#'`）  | `String`       | 获取单个字符串的首字母 |
+| `XueHuaPinyin.getFirstLetters` | `texts`（必填）、`digitFallback`（可选，默认 `'#'`） | `List<String>` | 批量获取首字母     |
 
 #### 首字母判定规则
 
 对 `text.trim()` 后的**第一个字符**进行判定：
 
-| 首字符类型 | 处理方式 | 示例 |
-|------------|----------|------|
-| 中文汉字 | 转为无声调拼音，取首字母并大写 | `'张三'` → `'Z'` |
-| 英文字母 | 直接取首字母并大写 | `'Apple'` → `'A'` |
-| 数字 | 返回 `digitFallback`（默认 `'#'`） | `'123'` → `'#'` |
-| 标点符号 | 返回 `digitFallback`（默认 `'#'`） | `'!hello'` → `'#'` |
-| 其他字符 | 返回 `digitFallback`（默认 `'#'`） | emoji 等 → `'#'` |
-| 空字符串 | 返回空字符串 | `''` → `''` |
+| 首字符类型 | 处理方式                         | 示例                 |
+|-------|------------------------------|--------------------|
+| 中文汉字  | 转为无声调拼音，取首字母并大写              | `'张三'` → `'Z'`     |
+| 英文字母  | 直接取首字母并大写                    | `'Apple'` → `'A'`  |
+| 数字    | 返回 `digitFallback`（默认 `'#'`） | `'123'` → `'#'`    |
+| 标点符号  | 返回 `digitFallback`（默认 `'#'`） | `'!hello'` → `'#'` |
+| 其他字符  | 返回 `digitFallback`（默认 `'#'`） | emoji 等 → `'#'`    |
+| 空字符串  | 返回空字符串                       | `''` → `''`        |
 
 #### 混合字符串
 
@@ -138,30 +138,30 @@ XueHuaPinyin.getFirstLetter(text: '1张三');  // '#' — 首字为数字
 
 ### 拼音转换
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| `XueHuaPinyin.toLazyPinyin` | `text`、`args` | `List<String>` | 每字取一个读音 |
-| `XueHuaPinyin.toPinyin` | `text`、`args` | `List<List<String>>` | 支持多音字，每字可返回多个读音 |
+| 方法                          | 参数            | 返回值                  | 说明              |
+|-----------------------------|---------------|----------------------|-----------------|
+| `XueHuaPinyin.toLazyPinyin` | `text`、`args` | `List<String>`       | 每字取一个读音         |
+| `XueHuaPinyin.toPinyin`     | `text`、`args` | `List<List<String>>` | 支持多音字，每字可返回多个读音 |
 
 #### PinyinArgs
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `style` | `PinyinStyle` | 拼音输出风格 |
-| `heteronym` | `bool` | 是否启用多音字（仅 `toPinyin` 有效） |
+| 字段          | 类型            | 说明                       |
+|-------------|---------------|--------------------------|
+| `style`     | `PinyinStyle` | 拼音输出风格                   |
+| `heteronym` | `bool`        | 是否启用多音字（仅 `toPinyin` 有效） |
 
 #### PinyinStyle
 
-| 值 | 说明 | 示例 |
-|----|------|------|
-| `normal` | 无声调 | `zhong` |
-| `tone` | 带声调 | `zhōng` |
-| `tone2` | 数字声调（声调在字母中间） | `zho1ng` |
-| `firstLetter` | 首字母 | `z` |
-| `initials` | 声母 | `zh` |
-| `finals` | 韵母 | `ong` |
-| `finalsTone` | 带声调韵母 | `ōng` |
-| `finalsTone2` | 数字声调韵母 | `o1ng` |
+| 值             | 说明            | 示例       |
+|---------------|---------------|----------|
+| `normal`      | 无声调           | `zhong`  |
+| `tone`        | 带声调           | `zhōng`  |
+| `tone2`       | 数字声调（声调在字母中间） | `zho1ng` |
+| `firstLetter` | 首字母           | `z`      |
+| `initials`    | 声母            | `zh`     |
+| `finals`      | 韵母            | `ong`    |
+| `finalsTone`  | 带声调韵母         | `ōng`    |
+| `finalsTone2` | 数字声调韵母        | `o1ng`   |
 
 ## 使用场景示例
 
@@ -199,9 +199,9 @@ avatarText('007');   // '#'
 
 ## 依赖说明
 
-| 依赖 | 用途 |
-|------|------|
-| [pinyin](https://crates.io/crates/pinyin) 0.11 | Rust 拼音转换引擎 |
+| 依赖                                                                         | 用途                 |
+|----------------------------------------------------------------------------|--------------------|
+| [pinyin](https://crates.io/crates/pinyin) 0.11                             | Rust 拼音转换引擎        |
 | [flutter_rust_bridge](https://pub.dev/packages/flutter_rust_bridge) 2.12.0 | Dart ↔ Rust FFI 绑定 |
 
 ## 许可证

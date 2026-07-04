@@ -101,30 +101,30 @@ All methods are static members of [`XueHuaPinyin`](lib/src/xue_hua_pinyin.dart).
 
 ### Initialization
 
-| Method | Description |
-|--------|-------------|
-| `XueHuaPinyin.initialize()` | Initialize the Rust runtime; call once at startup |
-| `XueHuaPinyin.defaultPinyinArgs()` | Returns default `PinyinArgs` from Rust |
+| Method                             | Description                                       |
+|------------------------------------|---------------------------------------------------|
+| `XueHuaPinyin.initialize()`        | Initialize the Rust runtime; call once at startup |
+| `XueHuaPinyin.defaultPinyinArgs()` | Returns default `PinyinArgs` from Rust            |
 
 ### Index Letters
 
-| Method | Parameters | Returns | Description |
-|--------|------------|---------|-------------|
-| `XueHuaPinyin.getFirstLetter` | `text` (required), `digitFallback` (optional, default `'#'`) | `String` | Index letter for one string |
+| Method                         | Parameters                                                    | Returns        | Description                    |
+|--------------------------------|---------------------------------------------------------------|----------------|--------------------------------|
+| `XueHuaPinyin.getFirstLetter`  | `text` (required), `digitFallback` (optional, default `'#'`)  | `String`       | Index letter for one string    |
 | `XueHuaPinyin.getFirstLetters` | `texts` (required), `digitFallback` (optional, default `'#'`) | `List<String>` | Index letters for many strings |
 
 #### Index Letter Rules
 
 The **first character** of `text.trim()` determines the result:
 
-| First character | Behavior | Example |
-|-----------------|----------|---------|
-| Chinese hanzi | Toneless pinyin first letter, uppercased | `'张三'` → `'Z'` |
-| ASCII letter | Uppercased | `'Apple'` → `'A'` |
-| Digit | Returns `digitFallback` (default `'#'`) | `'123'` → `'#'` |
-| Punctuation | Returns `digitFallback` (default `'#'`) | `'!hello'` → `'#'` |
-| Other | Returns `digitFallback` (default `'#'`) | emoji → `'#'` |
-| Empty string | Empty string | `''` → `''` |
+| First character | Behavior                                 | Example            |
+|-----------------|------------------------------------------|--------------------|
+| Chinese hanzi   | Toneless pinyin first letter, uppercased | `'张三'` → `'Z'`     |
+| ASCII letter    | Uppercased                               | `'Apple'` → `'A'`  |
+| Digit           | Returns `digitFallback` (default `'#'`)  | `'123'` → `'#'`    |
+| Punctuation     | Returns `digitFallback` (default `'#'`)  | `'!hello'` → `'#'` |
+| Other           | Returns `digitFallback` (default `'#'`)  | emoji → `'#'`      |
+| Empty string    | Empty string                             | `''` → `''`        |
 
 #### Mixed Strings
 
@@ -138,30 +138,30 @@ XueHuaPinyin.getFirstLetter(text: '1张三');  // '#' — first char is digit
 
 ### Pinyin Conversion
 
-| Method | Parameters | Returns | Description |
-|--------|------------|---------|-------------|
-| `XueHuaPinyin.toLazyPinyin` | `text`, `args` | `List<String>` | One reading per character |
-| `XueHuaPinyin.toPinyin` | `text`, `args` | `List<List<String>>` | Optional heteronym; multiple readings per character |
+| Method                      | Parameters     | Returns              | Description                                         |
+|-----------------------------|----------------|----------------------|-----------------------------------------------------|
+| `XueHuaPinyin.toLazyPinyin` | `text`, `args` | `List<String>`       | One reading per character                           |
+| `XueHuaPinyin.toPinyin`     | `text`, `args` | `List<List<String>>` | Optional heteronym; multiple readings per character |
 
 #### PinyinArgs
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `style` | `PinyinStyle` | Output style |
-| `heteronym` | `bool` | Enable heteronym (only affects `toPinyin`) |
+| Field       | Type          | Description                                |
+|-------------|---------------|--------------------------------------------|
+| `style`     | `PinyinStyle` | Output style                               |
+| `heteronym` | `bool`        | Enable heteronym (only affects `toPinyin`) |
 
 #### PinyinStyle
 
-| Value | Description | Example |
-|-------|-------------|---------|
-| `normal` | Toneless | `zhong` |
-| `tone` | With tone marks | `zhōng` |
-| `tone2` | Numeric tone (mid-syllable) | `zho1ng` |
-| `firstLetter` | First letter | `z` |
-| `initials` | Initial consonant | `zh` |
-| `finals` | Final (toneless) | `ong` |
-| `finalsTone` | Final with tone | `ōng` |
-| `finalsTone2` | Final with numeric tone | `o1ng` |
+| Value         | Description                 | Example  |
+|---------------|-----------------------------|----------|
+| `normal`      | Toneless                    | `zhong`  |
+| `tone`        | With tone marks             | `zhōng`  |
+| `tone2`       | Numeric tone (mid-syllable) | `zho1ng` |
+| `firstLetter` | First letter                | `z`      |
+| `initials`    | Initial consonant           | `zh`     |
+| `finals`      | Final (toneless)            | `ong`    |
+| `finalsTone`  | Final with tone             | `ōng`    |
+| `finalsTone2` | Final with numeric tone     | `o1ng`   |
 
 ## Usage Examples
 
@@ -200,10 +200,10 @@ avatarText('007');   // '#'
 
 ## Dependencies
 
-| Dependency | Purpose |
-|------------|---------|
-| [pinyin](https://crates.io/crates/pinyin) 0.11 | Rust pinyin engine |
-| [flutter_rust_bridge](https://pub.dev/packages/flutter_rust_bridge) 2.12.0 | Dart ↔ Rust FFI |
+| Dependency                                                                 | Purpose            |
+|----------------------------------------------------------------------------|--------------------|
+| [pinyin](https://crates.io/crates/pinyin) 0.11                             | Rust pinyin engine |
+| [flutter_rust_bridge](https://pub.dev/packages/flutter_rust_bridge) 2.12.0 | Dart ↔ Rust FFI    |
 
 ## License
 

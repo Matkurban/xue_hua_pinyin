@@ -1,15 +1,13 @@
-# Changelog
+## 1.1.1
 
-本项目的所有重要变更均记录在此文件中。
-
-格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
-版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
+- Optimized initialization
 
 ## 1.1.0
 
 ### 变更（Breaking）
 
-- 移除顶层函数导出（`getFirstLetter`、`getFirstLetters`、`toLazyPinyin`、`toPinyin`）；请统一通过 `XueHuaPinyin.getFirstLetter`、`XueHuaPinyin.toLazyPinyin` 等静态方法调用
+- 移除顶层函数导出（`getFirstLetter`、`getFirstLetters`、`toLazyPinyin`、`toPinyin`）；请统一通过
+  `XueHuaPinyin.getFirstLetter`、`XueHuaPinyin.toLazyPinyin` 等静态方法调用
 - `PinyinArgs.default_()` 改为 `XueHuaPinyin.defaultPinyinArgs()`
 
 ### 变更
@@ -31,10 +29,10 @@
 - `PinyinStyle` 枚举：支持 `normal`、`tone`、`tone2`、`firstLetter`、`initials`、`finals`、`finalsTone`、`finalsTone2` 八种输出风格
 - `PinyinArgs` 参数结构体：配置拼音风格与多音字开关
 - `getFirstLetter`：获取单个字符串首字母
-  - 中文 → 无声调拼音首字母大写
-  - 英文 → 首字母大写
-  - 数字 / 标点 / 其他字符 → 返回 `digitFallback`（默认 `#`）
-  - 混合字符串仅根据第一个字符判定
+    - 中文 → 无声调拼音首字母大写
+    - 英文 → 首字母大写
+    - 数字 / 标点 / 其他字符 → 返回 `digitFallback`（默认 `#`）
+    - 混合字符串仅根据第一个字符判定
 - `getFirstLetters`：批量获取首字母
 - `XueHuaPinyin.initialize()`：插件初始化入口
 - 跨平台 FFI 支持：Android、iOS、macOS、Windows、Linux
