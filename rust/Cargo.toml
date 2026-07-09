@@ -9,6 +9,8 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 flutter_rust_bridge = "=2.12.0"
 pinyin = "0.11.0"
+tokio = { version = "1.52.3", features = ["rt", "macros"] }
+threadpool = "1.8.1"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
