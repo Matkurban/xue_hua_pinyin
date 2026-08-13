@@ -1,6 +1,6 @@
 name: xue_hua_pinyin
 description: "High-performance Flutter pinyin plugin powered by Rust. Converts Chinese to pinyin (heteronym, multiple tone styles) and extracts index letters for contact lists (mixed Chinese/English, configurable digit/punctuation fallback)"
-version: 1.1.2
+version: 1.1.3
 homepage: https://github.com/Matkurban/xue_hua_pinyin
 repository: https://github.com/Matkurban/xue_hua_pinyin
 issue_tracker: https://github.com/Matkurban/xue_hua_pinyin/issues
@@ -16,11 +16,11 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_rust_bridge: 2.12.0
-  plugin_platform_interface: ^2.0.2
+  plugin_platform_interface: ^2.1.8
 
 dev_dependencies:
-  ffi: ^2.1.3
-  ffigen: ^20.1.1
+  ffi: ^2.2.0
+  ffigen: ^21.0.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
